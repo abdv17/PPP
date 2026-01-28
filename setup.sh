@@ -26,7 +26,7 @@ installVirtualEnvironment() {
   pip install -r requirements.txt
 
   # Sanity checks
-  python -c "import requests, pytest; print('requests', requests.__version__, 'pytest', pytest.__version__)"
+#  python -c "import requests, pytest; print('requests', requests.__version__, 'pytest', pytest.__version__)"
   pytest --version
 }
 
