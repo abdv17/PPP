@@ -20,11 +20,12 @@ def test_login():
     
     logging.info('Running the test case')
     print('running login test case')
-    with sync_playwright as p:
-        logging.info('Inside sync playwright block')
-        print('Inside sync playwright block and launching chrome with google.co.in')   
-        browser = p.chromium.launch(headless=False)
-        context = browser.new_context(viewport=None)
-        page = context.new_page()
-        page.goto('https://google.co.in')
+    logging.debug('')
+    # with sync_playwright as p:
+    #     logging.info('Inside sync playwright block')
+    #     print('Inside sync playwright block and launching chrome with google.co.in')
+    #     browser = p.chromium.launch(headless=False)
+    #     context = browser.new_context(viewport=None)
+    #     page = context.new_page()
+    #     page.goto('https://google.co.in')
         
