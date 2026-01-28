@@ -25,6 +25,6 @@ def test_login():
         print('Inside sync playwright block and launching chrome with google.co.in')   
         browser = p.chromium.launch(headless=False)
         context = browser.new_context(viewport=None)
-        page = content.new_page()
+        page = context.new_page()
         page.goto('https://google.co.in')
         
