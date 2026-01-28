@@ -10,89 +10,27 @@ echo "Set working directory from GitLab editing working_dir variable"
 working_dir=$(pwd)
 
 
-# Function: installVirtualEnvironment
+
 installVirtualEnvironment() {
-  echo "Inside installVirtualEnvironment() Working directory: $(pwd)"
-  #cd ..
+  set -e
+  echo "Inside installVirtualEnvironment() pwd: $(pwd)"
+
   if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
-    # Check if python3-full is installed (required for venv on some systems)
-    if ! dpkg -l | grep -q python3-full; then
-      echo "Installing python3-full package..."
-      sudo apt-get update && sudo apt-get install -y python3-full python3-venv
-    fi
-
-    # Create virtual environment directly without installing virtualenv first
     python3 -m venv venv
-    echo "Ran: python3 -m venv venv"
-    source venv/bin/activate
-    echo "Ran: source venv/bin/activate"
-
-    # Upgrade pip within the virtual environment
-    pip install --upgrade pip
-    echo "Installing requirements from requirements.txt..."
-    pip install -r requirements.txt || { echo "ERROR: Failed to install requirements.txt"; return 1; }
-
-#    pip install --upgrade pytest-metadata
-
-    echo "Virtual environment created and activated."
-    echo "Verifying requests module installation..."
-    python -c "import requests; print(f'requests version: {requests.__version__}')" || { echo "ERROR: requests module not found!"; return 1; }
-    echo "Verifying pytest installation..."
-    python -c "import pytest; print(f'pytest version: {pytest.__version__}')" || { echo "ERROR: pytest module not found!"; return 1; }
-    echo "Testing pytest execution..."
-    pytest --version || { echo "ERROR: pytest execution failed!"; return 1; }
-  else
-    echo "Virtual environment already exists."
-    echo "Activating existing virtual environment..."
-    source venv/bin/activate
-    echo "Ran: source venv/bin/activate"
-
-    # Install/upgrade packages in existing venv
-    pip install --upgrade pip
-    echo "Installing requirements from requirements.txt..."
-    pip install -r requirements.txt || { echo "ERROR: Failed to install requirements.txt"; return 1; }
-
-#    pip install --upgrade pytest-metadata
-
-    echo "Virtual environment activated and packages updated."
-    echo "Verifying requests module installation..."
-    python -c "import requests; print(f'requests version: {requests.__version__}')" || { echo "ERROR: requests module not found!"; return 1; }
-    echo "Verifying pytest installation..."
-    python -c "import pytest; print(f'pytest version: {pytest.__version__}')" || { echo "ERROR: pytest module not found!"; return 1; }
-    echo "Testing pytest execution..."
-    pytest --version || { echo "ERROR: pytest execution failed!"; return 1; }
   fi
 
+  # Activate & install deps
+  . venv/bin/activate
+  python -m pip install --upgrade pip
+  pip install -r requirements.txt
+
+  # Sanity checks
+  python -c "import requests, pytest; print('requests', requests.__version__, 'pytest', pytest.__version__)"
+  pytest --version
 }
 
 
-# Function: installNpmModules
-installNpmModules() {
-  cd "$working_dir/ubitools-master/"
-  echo "Inside installNpmModules() Working directory: $(pwd)"
-  # if node_modules does not exist, run npm install, otherwise, skip
-  if [ ! -d "node_modules" ]; then
-    npm install
-  else
-    echo "node_modules already exists. Skipping npm install."
-  fi
-  cd ../
-}
-
-
-# Function: installNpmModules
-installNpmModules_DTM() {
-  cd "$working_dir/ubitools-master_DTM/"
-  echo "Inside installNpmModules_DTM() Working directory: $(pwd)"
-  # if node_modules does not exist, run npm install, otherwise, skip
-  if [ ! -d "node_modules" ]; then
-    npm install
-  else
-    echo "node_modules already exists. Skipping npm install."
-  fi
-  cd ../
-}
 
 checkVersions(){
   echo "-----------------------------------------------------------------------"
